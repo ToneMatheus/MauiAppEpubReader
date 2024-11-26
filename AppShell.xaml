@@ -8,7 +8,11 @@
     Title="MauiAppEpubReader">
 
     <Shell.MenuBarItems>
-        
+        <MenuBarItem Text="File">
+            <MenuFlyoutItem Text="Open" Command="{Binding OpenFileCommand}" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Exit" Command="{Binding CloseCommand}" />
+        </MenuBarItem>
     </Shell.MenuBarItems>
     
     <ShellContent

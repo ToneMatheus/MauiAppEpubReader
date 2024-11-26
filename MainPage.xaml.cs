@@ -10,7 +10,7 @@ namespace MauiAppEpubReader
         public MainPage()
         {
             InitializeComponent();
-            BindingContext = new MainViewModel();
+            BindingContext = new EpubViewModel();
         }
 
         private void OnCounterClicked(object sender, EventArgs e)
