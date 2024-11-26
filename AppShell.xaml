@@ -7,8 +7,12 @@
     Shell.FlyoutBehavior="Disabled"
     Title="MauiAppEpubReader">
 
+    <Shell.MenuBarItems>
+        
+    </Shell.MenuBarItems>
+    
     <ShellContent
-        Title="Home"
+        Title=""
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 

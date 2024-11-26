@@ -24,7 +24,7 @@ namespace MauiAppEpubReader
 
         public static void CloseApplication()
         {
-            Application.Current.Quit();
+            Application.Current?.Quit();
         }
     }
 }
