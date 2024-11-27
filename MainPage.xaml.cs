@@ -10,7 +10,8 @@ namespace MauiAppEpubReader
         public MainPage()
         {
             InitializeComponent();
-            BindingContext = new EpubViewModel();
+            BindingContext = new MainViewModel();
+
         }
 
         private void OnCounterClicked(object sender, EventArgs e)
@@ -25,26 +26,26 @@ namespace MauiAppEpubReader
             //SemanticScreenReader.Announce(CounterBtn.Text);
         }
 
-        private void OnWebViewNavigating(object sender, WebNavigatingEventArgs e)
-        {
-            // Handle navigation starting
-            Debug.WriteLine("Navigation started");
-        }
+        //private void OnWebViewNavigating(object sender, WebNavigatingEventArgs e)
+        //{
+        //    // Handle navigation starting
+        //    Debug.WriteLine("Navigation started");
+        //}
 
-        private void OnWebViewNavigated(object sender, WebNavigatedEventArgs e)
-        {
-            // Handle navigation completed
-            if (e.Result == WebNavigationResult.Failure)
-            {
-                // Handle navigation failure
-                Debug.WriteLine("Navigation failed");
-                DisplayAlert("Error", "Failed to load content", "OK");
-            }
-            else
-            {
-                Debug.WriteLine("Navigation completed successfully");
-            }
-        }
+        //private void OnWebViewNavigated(object sender, WebNavigatedEventArgs e)
+        //{
+        //    // Handle navigation completed
+        //    if (e.Result == WebNavigationResult.Failure)
+        //    {
+        //        // Handle navigation failure
+        //        Debug.WriteLine("Navigation failed");
+        //        DisplayAlert("Error", "Failed to load content", "OK");
+        //    }
+        //    else
+        //    {
+        //        Debug.WriteLine("Navigation completed successfully");
+        //    }
+        //}
 
     }
 

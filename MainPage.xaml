@@ -5,15 +5,19 @@
              x:Class="MauiAppEpubReader.MainPage">
 
     <ContentPage.MenuBarItems>
-     
+        <MenuBarItem Text="File">
+            <MenuFlyoutItem Text="Open" Command="{Binding OpenFileCommand}" />
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Exit" Command="{Binding CloseCommand}" />
+        </MenuBarItem>
     </ContentPage.MenuBarItems>
-
+   
     <StackLayout>
-        <WebView Navigating="OnWebViewNavigating" Navigated="OnWebViewNavigated">
-            <WebView.Source>
-                <HtmlWebViewSource Html="{Binding HtmlContent}" />
-            </WebView.Source>
-        </WebView>
+
+        <WebView HorizontalOptions="FillAndExpand" 
+                 VerticalOptions="FillAndExpand" 
+                 Source="{Binding WebViewSource}" />
+        
     </StackLayout>
 
     <!--<ScrollView>

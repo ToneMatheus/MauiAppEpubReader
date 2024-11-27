@@ -7,7 +7,6 @@ namespace MauiAppEpubReader
         public AppShell()
         {
             InitializeComponent();
-            BindingContext = new MainViewModel();
         }
     }
 }

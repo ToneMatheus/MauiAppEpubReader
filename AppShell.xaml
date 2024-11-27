@@ -7,13 +7,13 @@
     Shell.FlyoutBehavior="Disabled"
     Title="MauiAppEpubReader">
 
-    <Shell.MenuBarItems>
+    <!--<Shell.MenuBarItems>
         <MenuBarItem Text="File">
             <MenuFlyoutItem Text="Open" Command="{Binding OpenFileCommand}" />
             <MenuFlyoutSeparator />
             <MenuFlyoutItem Text="Exit" Command="{Binding CloseCommand}" />
         </MenuBarItem>
-    </Shell.MenuBarItems>
+    </Shell.MenuBarItems>-->
     
     <ShellContent
         Title=""
