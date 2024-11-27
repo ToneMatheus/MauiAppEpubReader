@@ -1,4 +1,4 @@
-﻿using MauiAppEpubReader.Models;
+﻿using MauiAppEpubReader.Models.MainViewModel;
 using System.Diagnostics;
 
 namespace MauiAppEpubReader

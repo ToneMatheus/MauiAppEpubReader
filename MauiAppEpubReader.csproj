@@ -64,4 +64,13 @@
 		<PackageReference Include="VersOne.Epub" Version="3.3.2" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="ClosePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="OpenPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>

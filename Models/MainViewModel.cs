@@ -11,12 +11,17 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using VersOne.Epub;
 
-namespace MauiAppEpubReader.Models
+namespace MauiAppEpubReader.Models.MainViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
         public ICommand OpenFileCommand { get; }
         public ICommand CloseCommand { get; }
+        public ICommand NextPageCommand { get; }
+        public ICommand PreviousPageCommand { get; }
+
+        private EpubBook epubBook;
+        private int currentPageIndex = 0;
 
         private HtmlWebViewSource webViewSource;
         public HtmlWebViewSource WebViewSource
@@ -33,6 +38,8 @@ namespace MauiAppEpubReader.Models
         {
             OpenFileCommand = new Command(async () => await OpenFileAsync());
             CloseCommand = new Command(CloseApplication);
+            NextPageCommand = new Command(NextPage, CanNavigateNext);
+            PreviousPageCommand = new Command(PreviousPage, CanNavigatePrevious);
         }
 
         private async Task OpenFileAsync()
@@ -61,7 +68,7 @@ namespace MauiAppEpubReader.Models
             MauiProgram.CloseApplication();
         }
 
-        public async Task LoadEpubFromFileAsync(FileResult fileResult)
+        private async Task LoadEpubFromFileAsync(FileResult fileResult)
         {
             var stream = await fileResult.OpenReadAsync();
             string filePath = Path.Combine(FileSystem.CacheDirectory, fileResult.FileName);
@@ -70,83 +77,100 @@ namespace MauiAppEpubReader.Models
                 await stream.CopyToAsync(fileStream);
             }
 
-            EpubBook epubBook = await EpubReader.ReadBookAsync(filePath);
-            Dictionary<string, string> imageFilePaths = await ExtractImagesAsync(epubBook);
-            string htmlContent = ExtractHtmlContent(epubBook, imageFilePaths);
-
-            WebViewSource = new HtmlWebViewSource
-            {
-                Html = htmlContent
-            };
-            Debug.WriteLine(htmlContent);
+            epubBook = await EpubReader.ReadBookAsync(filePath);
+            currentPageIndex = 0; // Start at the first page
+            LoadCurrentPage();
         }
 
-        private async Task<Dictionary<string, string>> ExtractImagesAsync(EpubBook epubBook)
+        private void LoadCurrentPage()
         {
-            Dictionary<string, string> imageFilePaths = new Dictionary<string, string>();
-            string imageSaveDirectory = Path.Combine(FileSystem.AppDataDirectory, "epub_images");
-
-            // Ensure the directory exists
-            if (!Directory.Exists(imageSaveDirectory))
+            if (epubBook?.ReadingOrder != null && epubBook.ReadingOrder.Count > 0)
             {
-                Directory.CreateDirectory(imageSaveDirectory);
-            }
-
-            foreach (var imageFile in epubBook.Content.Images.Local)
-            {
-                // Generate a safe file path
-                string imageFilePath = Path.Combine(imageSaveDirectory, Path.GetFileName(imageFile.FilePath));
-
-                // Save the image
-                using (var imageStream = new MemoryStream(imageFile.Content))
-                using (var fileStream = File.Create(imageFilePath))
+                try
                 {
-                    await imageStream.CopyToAsync(fileStream);
-                }
+                    var currentPage = epubBook.ReadingOrder[currentPageIndex];
+                    string content = currentPage.Content;
 
-                // Map the EPUB image file path to the local file path
-                imageFilePaths[imageFile.FilePath] = imageFilePath;
-
-                Debug.WriteLine($"Image saved: {imageFilePath}");
-            }
-
-            return imageFilePaths;
-        }
-
-
-        private string ExtractHtmlContent(EpubBook epubBook, Dictionary<string, string> imageFilePaths)
-        {
-            foreach (EpubLocalTextContentFile textContentFile in epubBook.ReadingOrder)
-            {
-                string content = textContentFile.Content;
-
-                // Match the entire HTML content
-                var match = System.Text.RegularExpressions.Regex.Match(content, @"<html.*?>.*?</html>", System.Text.RegularExpressions.RegexOptions.Singleline);
-                if (match.Success)
-                {
-                    string htmlContent = match.Value;
-
-                    // Replace image paths with Base64 data URIs
+                    // Optionally embed images as Base64
                     foreach (var imageFile in epubBook.Content.Images.Local)
                     {
-                        // Convert image content to Base64
-                        string base64Image = Convert.ToBase64String(imageFile.Content);
-                        string dataUri = $"data:image/jpeg;base64,{base64Image}"; // Update MIME type as needed
+                        if (imageFile.Content.Length > 10 * 1024 * 1024) // Example: limit to 10MB
+                        {
+                            Debug.WriteLine($"Skipping large image: {imageFile.Key}");
+                            continue;
+                        }
 
-                        // Replace image references in the HTML
-                        htmlContent = htmlContent.Replace(imageFile.Key, dataUri);
+                        string base64Image = Convert.ToBase64String(imageFile.Content);
+                        string dataUri = $"data:image/jpeg;base64,{base64Image}";
+                        content = content.Replace(imageFile.Key, dataUri);
                     }
 
-                    return htmlContent;
+                    // Debug content size and structure
+                    Debug.WriteLine($"Loading page {currentPageIndex + 1}/{epubBook.ReadingOrder.Count}");
+                    Debug.WriteLine($"Content Length: {content.Length}");
+
+                    if (!content.Contains("<html>"))
+                    {
+                        content = $"<html><body>{content}</body></html>";
+                    }
+
+
+                    WebViewSource = new HtmlWebViewSource
+                    {
+                        Html = content
+                    };
+
+                    // Update navigation commands
+                    (NextPageCommand as Command)?.ChangeCanExecute();
+                    (PreviousPageCommand as Command)?.ChangeCanExecute();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error loading page {currentPageIndex + 1}: {ex.Message}");
+                    WebViewSource = new HtmlWebViewSource
+                    {
+                        Html = "<html><body><h1>Error loading page</h1></body></html>"
+                    };
                 }
             }
-
-            return "<html><body><h1>No content found</h1></body></html>";
         }
 
 
+        private void NextPage()
+        {
+            if (currentPageIndex < epubBook.ReadingOrder.Count - 1)
+            {
+                currentPageIndex++;
+                LoadCurrentPage();
+            }
+            else
+            {
+                Debug.WriteLine("Reached the last page.");
+            }
+        }
 
+        private void PreviousPage()
+        {
+            if (currentPageIndex > 0)
+            {
+                currentPageIndex--;
+                LoadCurrentPage();
+            }
+            else
+            {
+                Debug.WriteLine("Reached the first page.");
+            }
+        }
 
+        private bool CanNavigateNext()
+        {
+            return epubBook != null && currentPageIndex < epubBook.ReadingOrder.Count - 1;
+        }
+
+        private bool CanNavigatePrevious()
+        {
+            return epubBook != null && currentPageIndex > 0;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -154,5 +178,4 @@ namespace MauiAppEpubReader.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
 }

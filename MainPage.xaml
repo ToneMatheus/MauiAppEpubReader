@@ -1,24 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:MauiAppEpubReader.Models"
+             xmlns:local="clr-namespace:MauiAppEpubReader"
              x:Class="MauiAppEpubReader.MainPage">
 
-    <ContentPage.MenuBarItems>
+    <!--<ContentPage.MenuBarItems>
         <MenuBarItem Text="File">
             <MenuFlyoutItem Text="Open" Command="{Binding OpenFileCommand}" />
             <MenuFlyoutSeparator />
             <MenuFlyoutItem Text="Exit" Command="{Binding CloseCommand}" />
         </MenuBarItem>
-    </ContentPage.MenuBarItems>
-   
-    <StackLayout>
+    </ContentPage.MenuBarItems>-->
 
-        <WebView HorizontalOptions="FillAndExpand" 
+    <Grid>
+        
+        <WebView Grid.Row="0"
+                 HorizontalOptions="FillAndExpand" 
                  VerticalOptions="FillAndExpand" 
                  Source="{Binding WebViewSource}" />
-        
-    </StackLayout>
+
+        <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="End" Spacing="20">
+            <Button Text="Open" Command="{Binding OpenFileCommand}" />
+            <Button Text="Previous" Command="{Binding PreviousPageCommand}" />
+            <Button Text="Next" Command="{Binding NextPageCommand}" />
+        </StackLayout>
+    </Grid>
 
     <!--<ScrollView>
         <VerticalStackLayout

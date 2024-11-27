@@ -1,4 +1,4 @@
-﻿using MauiAppEpubReader.Models;
+﻿using MauiAppEpubReader.Models.MainViewModel;
 
 namespace MauiAppEpubReader
 {
@@ -7,6 +7,7 @@ namespace MauiAppEpubReader
         public AppShell()
         {
             InitializeComponent();
+            BindingContext = new MainViewModel();
         }
     }
 }
