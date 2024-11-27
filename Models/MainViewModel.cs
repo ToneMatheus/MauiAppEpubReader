@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MauiAppEpubReader.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +16,7 @@ namespace MauiAppEpubReader.Models.MainViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        private readonly HtmlContentService _htmlContentService;
         public ICommand OpenFileCommand { get; }
         public ICommand CloseCommand { get; }
         public ICommand NextPageCommand { get; }
@@ -45,13 +47,26 @@ namespace MauiAppEpubReader.Models.MainViewModel
             }
         }
 
-
-        public MainViewModel()
+        private String htmlContent;
+        public String HtmlContent
         {
+            get => htmlContent;
+            set
+            {
+                htmlContent = value;
+                _htmlContentService.HtmlContent = value; // Sync with the service
+                OnPropertyChanged();
+            }
+        }
+
+        public MainViewModel(HtmlContentService htmlContentService)
+        {
+            _htmlContentService = htmlContentService;
             OpenFileCommand = new Command(async () => await OpenFileAsync());
             CloseCommand = new Command(CloseApplication);
             NextPageCommand = new Command(NextPage, CanNavigateNext);
             PreviousPageCommand = new Command(PreviousPage, CanNavigatePrevious);
+
         }
 
         private async Task OpenFileAsync()
@@ -103,6 +118,8 @@ namespace MauiAppEpubReader.Models.MainViewModel
                 {
                     var currentPage = epubBook.ReadingOrder[currentPageIndex];
                     string content = currentPage.Content;
+
+                    HtmlContent = content;
 
                     // Optionally embed images as Base64
                     foreach (var imageFile in epubBook.Content.Images.Local)

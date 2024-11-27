@@ -1,4 +1,5 @@
 ﻿using MauiAppEpubReader.Models.MainViewModel;
+using MauiAppEpubReader.Services;
 
 namespace MauiAppEpubReader
 {
@@ -7,7 +8,8 @@ namespace MauiAppEpubReader
         public AppShell()
         {
             InitializeComponent();
-            BindingContext = new MainViewModel();
+            //var htmlContentService = new HtmlContentService(); // Create an instance of HtmlContentService
+            //BindingContext = new MainViewModel(htmlContentService); // Pass the instance to the ViewModel
         }
     }
 }

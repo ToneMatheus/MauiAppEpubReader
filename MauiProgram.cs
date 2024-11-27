@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MauiAppEpubReader.Models.ConvertViewModel;
+using MauiAppEpubReader.Models.MainViewModel;
+using MauiAppEpubReader.Services;
+using Microsoft.Extensions.Logging;
 
 namespace MauiAppEpubReader
 {
@@ -18,8 +21,16 @@ namespace MauiAppEpubReader
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            builder.Services.AddSingleton<HtmlContentService>();
+            // Register view models
+            builder.Services.AddSingleton<MainViewModel>();
+            builder.Services.AddTransient<ConvertViewModel>();
 
-            return builder.Build();
+            var app = builder.Build();
+
+            
+
+            return app;
         }
 
         public static void CloseApplication()

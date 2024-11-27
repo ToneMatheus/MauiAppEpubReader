@@ -25,9 +25,9 @@
              Route="MainPage" 
         />
         <ShellContent
-            Title="Open"
-            ContentTemplate="{DataTemplate local:OpenPage}"
-            Route="OpenPage" 
+            Title="Convert"
+            ContentTemplate="{DataTemplate local:ConvertPage}"
+            Route="ConvertPage" 
         />
         <ShellContent
             Title="Exit"
