@@ -20,7 +20,7 @@
                  Source="{Binding WebViewSource}" />
 
         <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="End" Spacing="20">
-            <Button Text="Open" Command="{Binding OpenFileCommand}" />
+            <Button Text="Open" Command="{Binding OpenFileCommand}" IsEnabled="{Binding IsFileOpen}" />
             <Button Text="Previous" Command="{Binding PreviousPageCommand}" />
             <Button Text="Next" Command="{Binding NextPageCommand}" />
         </StackLayout>

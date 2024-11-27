@@ -34,6 +34,18 @@ namespace MauiAppEpubReader.Models.MainViewModel
             }
         }
 
+        private bool isFileOpen = true;
+        public bool IsFileOpen
+        {
+            get => isFileOpen;
+            set
+            {
+                isFileOpen = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public MainViewModel()
         {
             OpenFileCommand = new Command(async () => await OpenFileAsync());
@@ -60,6 +72,7 @@ namespace MauiAppEpubReader.Models.MainViewModel
             if (result != null)
             {
                 await LoadEpubFromFileAsync(result);
+                IsFileOpen = false;
             }
         }
 
