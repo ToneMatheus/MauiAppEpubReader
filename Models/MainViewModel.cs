@@ -78,25 +78,41 @@ namespace MauiAppEpubReader.Models
             {
                 Html = htmlContent
             };
+            Debug.WriteLine(htmlContent);
         }
 
         private async Task<Dictionary<string, string>> ExtractImagesAsync(EpubBook epubBook)
         {
             Dictionary<string, string> imageFilePaths = new Dictionary<string, string>();
+            string imageSaveDirectory = Path.Combine(FileSystem.AppDataDirectory, "epub_images");
+
+            // Ensure the directory exists
+            if (!Directory.Exists(imageSaveDirectory))
+            {
+                Directory.CreateDirectory(imageSaveDirectory);
+            }
 
             foreach (var imageFile in epubBook.Content.Images.Local)
             {
-                string imageFilePath = Path.Combine(FileSystem.CacheDirectory, Path.GetFileName(imageFile.FilePath));
+                // Generate a safe file path
+                string imageFilePath = Path.Combine(imageSaveDirectory, Path.GetFileName(imageFile.FilePath));
+
+                // Save the image
                 using (var imageStream = new MemoryStream(imageFile.Content))
                 using (var fileStream = File.Create(imageFilePath))
                 {
                     await imageStream.CopyToAsync(fileStream);
                 }
+
+                // Map the EPUB image file path to the local file path
                 imageFilePaths[imageFile.FilePath] = imageFilePath;
+
+                Debug.WriteLine($"Image saved: {imageFilePath}");
             }
 
             return imageFilePaths;
         }
+
 
         private string ExtractHtmlContent(EpubBook epubBook, Dictionary<string, string> imageFilePaths)
         {
@@ -104,16 +120,21 @@ namespace MauiAppEpubReader.Models
             {
                 string content = textContentFile.Content;
 
-                // Match entire HTML content
+                // Match the entire HTML content
                 var match = System.Text.RegularExpressions.Regex.Match(content, @"<html.*?>.*?</html>", System.Text.RegularExpressions.RegexOptions.Singleline);
                 if (match.Success)
                 {
                     string htmlContent = match.Value;
 
-                    // Update image paths in HTML content
-                    foreach (var imageFilePath in imageFilePaths)
+                    // Replace image paths with Base64 data URIs
+                    foreach (var imageFile in epubBook.Content.Images.Local)
                     {
-                        htmlContent = htmlContent.Replace(imageFilePath.Key, imageFilePath.Value);
+                        // Convert image content to Base64
+                        string base64Image = Convert.ToBase64String(imageFile.Content);
+                        string dataUri = $"data:image/jpeg;base64,{base64Image}"; // Update MIME type as needed
+
+                        // Replace image references in the HTML
+                        htmlContent = htmlContent.Replace(imageFile.Key, dataUri);
                     }
 
                     return htmlContent;
@@ -122,6 +143,10 @@ namespace MauiAppEpubReader.Models
 
             return "<html><body><h1>No content found</h1></body></html>";
         }
+
+
+
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
