@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using VersOne.Epub;
+using System.Text.RegularExpressions;
 
 namespace MauiAppEpubReader.Models.MainViewModel
 {
@@ -53,9 +54,12 @@ namespace MauiAppEpubReader.Models.MainViewModel
             get => htmlContent;
             set
             {
-                htmlContent = value;
-                _htmlContentService.HtmlContent = value; // Sync with the service
-                OnPropertyChanged();
+                if (htmlContent != value)
+                {
+                    htmlContent = value;
+                    _htmlContentService.HtmlContent = value; // Sync with the service
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -119,8 +123,6 @@ namespace MauiAppEpubReader.Models.MainViewModel
                     var currentPage = epubBook.ReadingOrder[currentPageIndex];
                     string content = currentPage.Content;
 
-                    HtmlContent = content;
-
                     // Optionally embed images as Base64
                     foreach (var imageFile in epubBook.Content.Images.Local)
                     {
@@ -144,6 +146,8 @@ namespace MauiAppEpubReader.Models.MainViewModel
                         content = $"<html><body>{content}</body></html>";
                     }
 
+                    HtmlContent = ShowTextInHtml(content);
+
 
                     WebViewSource = new HtmlWebViewSource
                     {
@@ -163,6 +167,21 @@ namespace MauiAppEpubReader.Models.MainViewModel
                     };
                 }
             }
+        }
+
+    
+
+        // Add this method to the MainViewModel class
+        private string StripHtmlTags(string input)
+        {
+            return Regex.Replace(input, "<.*?>", string.Empty);
+        }
+
+        // Modify the ShowTextInHtml method to use StripHtmlTags
+        private String ShowTextInHtml(string content)
+        {
+            HtmlContent = StripHtmlTags(content);
+            return HtmlContent;
         }
 
 

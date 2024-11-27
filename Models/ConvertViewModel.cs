@@ -16,6 +16,15 @@ namespace MauiAppEpubReader.Models.ConvertViewModel
         public ConvertViewModel(HtmlContentService htmlContentService)
         {
             _htmlContentService = htmlContentService;
+            _htmlContentService.PropertyChanged += HtmlContentService_PropertyChanged;
+        }
+
+        private void HtmlContentService_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(HtmlContentService.HtmlContent))
+            {
+                OnPropertyChanged(nameof(HtmlContent));
+            }
         }
 
         public string HtmlContent
