@@ -7,13 +7,13 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MauiAppEpubReader.Models.ConvertViewModel
+namespace MauiAppEpubReader.Models
 {
-    public class ConvertViewModel : INotifyPropertyChanged
+    public class EditViewModel : INotifyPropertyChanged
     {
         private readonly HtmlContentService _htmlContentService;
 
-        public ConvertViewModel(HtmlContentService htmlContentService)
+        public EditViewModel(HtmlContentService htmlContentService)
         {
             _htmlContentService = htmlContentService;
             _htmlContentService.PropertyChanged += HtmlContentService_PropertyChanged;

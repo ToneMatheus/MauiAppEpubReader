@@ -25,14 +25,14 @@
              Route="MainPage" 
         />
         <ShellContent
-            Title="Convert"
-            ContentTemplate="{DataTemplate local:ConvertPage}"
-            Route="ConvertPage" 
+            Title="Edit"
+            ContentTemplate="{DataTemplate local:EditPage}"
+            Route="EditPage" 
         />
         <ShellContent
-            Title="Exit"
-            ContentTemplate="{DataTemplate local:ClosePage}"
-            Route="ClosePage" 
+            Title="Text Sprouts"
+            ContentTemplate="{DataTemplate local:TextSproutPage}"
+            Route="TextSproutPage" 
         />
     </FlyoutItem>
 

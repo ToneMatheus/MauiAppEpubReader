@@ -65,7 +65,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="ClosePage.xaml">
+	  <Compile Update="TextSproutPage.xaml.cs">
+	    <DependentUpon>TextSproutPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="EditPage.xaml.cs">
+	    <DependentUpon>EditPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="TextSproutPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

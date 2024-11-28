@@ -13,7 +13,7 @@ using System.Windows.Input;
 using VersOne.Epub;
 using System.Text.RegularExpressions;
 
-namespace MauiAppEpubReader.Models.MainViewModel
+namespace MauiAppEpubReader.Models
 {
     public class MainViewModel : INotifyPropertyChanged
     {
