@@ -21,6 +21,7 @@ namespace MauiAppEpubReader
     		builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton<HtmlContentService>();
+            builder.Services.AddSingleton<MysqlDataStore>();
             // Register view models
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddTransient<EditViewModel>();

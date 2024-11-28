@@ -1,7 +1,10 @@
+#if ANDROID
 using Android.Views;
 using AndroidX.AppCompat.Widget;
-using Microsoft.Maui.Handlers;
 using static Android.Views.View;
+#endif
+using Microsoft.Maui.Handlers;
+
 
 namespace MauiAppEpubReader;
 
