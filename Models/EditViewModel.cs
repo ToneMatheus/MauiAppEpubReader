@@ -15,10 +15,12 @@ namespace MauiAppEpubReader.Models
         private readonly HtmlContentService _htmlContentService;
         private readonly MysqlDataStore _mysqlDataStore = new MysqlDataStore();
         private string _title;
+        private readonly INavigation _navigation;
 
-        public EditViewModel(HtmlContentService htmlContentService/*, MysqlDataStore mysqlDataStore*/)
+        public EditViewModel(HtmlContentService htmlContentService, INavigation navigation/*, MysqlDataStore mysqlDataStore*/)
         {
             _htmlContentService = htmlContentService;
+            _navigation = navigation;
             //_mysqlDataStore = mysqlDataStore;
             _htmlContentService.PropertyChanged += HtmlContentService_PropertyChanged;
 
@@ -63,6 +65,7 @@ namespace MauiAppEpubReader.Models
             };
 
             await _mysqlDataStore.AddTextSprout(newTextSprout);
+            await _navigation.PushAsync(new TextSproutPage());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

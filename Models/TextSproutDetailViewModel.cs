@@ -10,10 +10,12 @@ namespace MauiAppEpubReader.Models
         private bool _isEditVisible;
         private TextSprout _textSprout;
         private readonly MysqlDataStore _mysqlDataStore_ = new MysqlDataStore();
+        private readonly INavigation _navigation;
 
-        public TextSproutDetailViewModel(TextSprout textSprout)
+        public TextSproutDetailViewModel(TextSprout textSprout, INavigation navigation)
         {
             _textSprout = textSprout;
+            _navigation = navigation;
             DelCommand = new Command(async () => await DeleteTextSprout());
             EditCommand = new Command(OnEdit);
             SaveCommand = new Command(async () => await EditTextSprout());
@@ -60,7 +62,8 @@ namespace MauiAppEpubReader.Models
         private async Task DeleteTextSprout()
         {
             await _mysqlDataStore_.DeleteTextSprout(_textSprout.Id);
-            MessagingCenter.Send(this, "DeleteTextSprout", _textSprout);            // Navigate back or show a confirmation message
+            MessagingCenter.Send(this, "DeleteTextSprout", _textSprout);
+            await _navigation.PopAsync();
         }
         private void OnEdit()
         {
@@ -77,6 +80,7 @@ namespace MauiAppEpubReader.Models
             };
             await _mysqlDataStore_.EditTextSprout(_textSprout.Id, updatedTextSprout);
             MessagingCenter.Send(this, "EditTextSprout", updatedTextSprout);
+            await _navigation.PopAsync();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

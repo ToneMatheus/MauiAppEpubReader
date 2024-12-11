@@ -9,7 +9,7 @@ namespace MauiAppEpubReader
         public EditPage()
         {
             InitializeComponent();
-            BindingContext = ServiceHelper.GetService<EditViewModel>();
+            BindingContext = new EditViewModel(ServiceHelper.GetService<HtmlContentService>(), Navigation);
         }
     }
 }
