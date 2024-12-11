@@ -156,5 +156,39 @@ namespace MauiAppEpubReader.Services
                 }
             }
         }
+
+        public async Task<TextSprout> GetTextSproutById(int id)
+        {
+            HttpClient client = new HttpClient();
+            try
+            {
+#if ANDROID
+        string response = await client.GetStringAsync($"http://10.0.2.2:8000/api/textsprout/{id}");
+#elif WINDOWS10_0_19041_0_OR_GREATER
+        string response = await client.GetStringAsync($"http://localhost:8000/api/textsprout/{id}");
+#endif
+                Debug.WriteLine(response);
+
+                return JsonConvert.DeserializeObject<TextSprout>(response);
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+                Debug.WriteLine($"Request error: {httpRequestException.Message}");
+                if (httpRequestException.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {httpRequestException.InnerException.Message}");
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Unexpected error: {e.Message}");
+                if (e.InnerException != null)
+                {
+                    Debug.WriteLine($"Inner exception: {e.InnerException.Message}");
+                }
+                return null;
+            }
+        }
     }
 }

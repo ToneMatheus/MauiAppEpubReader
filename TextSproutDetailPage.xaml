@@ -2,12 +2,24 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppEpubReader.TextSproutDetailPage"
+             xmlns:local="clr-namespace:MauiAppEpubReader"
              Title="TextSproutDetailPage">
     <Grid>
-        <Label x:Name="TextLabel" />
-   
-        <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="End" Spacing="20">
-            <Button Text="Edit" Command="{Binding EditCommand}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="20" />
+            <!-- Space between Label and CustomEditor -->
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Label x:Name="TextLabel" Grid.Row="0" IsVisible="{Binding IsLabelVisible}"/>
+
+        <local:CustomEditor x:Name="editView" Grid.Row="2" AutoSize="TextChanges" Text="{Binding Text}" IsVisible="{Binding IsEditVisible}"/>
+       
+        <StackLayout Grid.Row="3" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="End" Spacing="20">
+            <Entry x:Name="inputView" Placeholder="Enter title here" Text="{Binding Title}" IsVisible="{Binding IsEditVisible}"/>
+            <Button Text="Edit" Command="{Binding EditCommand}" IsVisible="{Binding IsLabelVisible}"/>
+            <Button Text="Save" Command="{Binding SaveCommand}" IsVisible="{Binding IsEditVisible}"/>
             <Button Text="Delete" Command="{Binding DelCommand}" />
         </StackLayout>
     </Grid>
