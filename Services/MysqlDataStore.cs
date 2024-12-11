@@ -7,20 +7,11 @@ namespace MauiAppEpubReader.Services
 {
     internal class MysqlDataStore
     {
-        private static List<TextSprout> _cachedTextSproutPages;
-        private static DateTime _lastFetchTime;
-        private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(10);
-
         public static List<TextSprout> TextSproutList = new List<TextSprout>();
 
         // GET ALL TEXTSPROUT
         public async Task<List<TextSprout>> GetAllTextSprout()
         {
-            if (_cachedTextSproutPages != null && (DateTime.Now - _lastFetchTime) < CacheExpiration)
-            {
-                return _cachedTextSproutPages;
-            }
-
             HttpClient client = new HttpClient();
             try
             {
@@ -31,10 +22,7 @@ namespace MauiAppEpubReader.Services
 #endif
                 Debug.WriteLine(response);
 
-                _cachedTextSproutPages = JsonConvert.DeserializeObject<List<TextSprout>>(response);
-                _lastFetchTime = DateTime.Now;
-
-                return _cachedTextSproutPages;
+                return JsonConvert.DeserializeObject<List<TextSprout>>(response);
             }
             catch (HttpRequestException httpRequestException)
             {

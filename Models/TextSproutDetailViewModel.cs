@@ -8,7 +8,6 @@ namespace MauiAppEpubReader.Models
     public class TextSproutDetailViewModel : INotifyPropertyChanged
     {
         private bool _isEditVisible;
-        private readonly MysqlDataStore _mysqlDataStore;
         private TextSprout _textSprout;
         private readonly MysqlDataStore _mysqlDataStore_ = new MysqlDataStore();
 
@@ -61,7 +60,7 @@ namespace MauiAppEpubReader.Models
         private async Task DeleteTextSprout()
         {
             await _mysqlDataStore_.DeleteTextSprout(_textSprout.Id);
-            // Navigate back or show a confirmation message
+            MessagingCenter.Send(this, "DeleteTextSprout", _textSprout);            // Navigate back or show a confirmation message
         }
         private void OnEdit()
         {
@@ -77,6 +76,7 @@ namespace MauiAppEpubReader.Models
                 Text = Text
             };
             await _mysqlDataStore_.EditTextSprout(_textSprout.Id, updatedTextSprout);
+            MessagingCenter.Send(this, "EditTextSprout", updatedTextSprout);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
