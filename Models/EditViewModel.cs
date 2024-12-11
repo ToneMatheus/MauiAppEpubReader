@@ -6,17 +6,23 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace MauiAppEpubReader.Models
 {
     public class EditViewModel : INotifyPropertyChanged
     {
         private readonly HtmlContentService _htmlContentService;
+        private readonly MysqlDataStore _mysqlDataStore = new MysqlDataStore();
+        private string _title;
 
-        public EditViewModel(HtmlContentService htmlContentService)
+        public EditViewModel(HtmlContentService htmlContentService/*, MysqlDataStore mysqlDataStore*/)
         {
             _htmlContentService = htmlContentService;
+            //_mysqlDataStore = mysqlDataStore;
             _htmlContentService.PropertyChanged += HtmlContentService_PropertyChanged;
+
+            AddCommand = new Command(async () => await AddTextSprout());
         }
 
         private void HtmlContentService_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -35,6 +41,28 @@ namespace MauiAppEpubReader.Models
                 _htmlContentService.HtmlContent = value;
                 OnPropertyChanged();
             }
+        }
+
+        public ICommand AddCommand { get; }
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private async Task AddTextSprout()
+        {
+            var newTextSprout = new TextSprout
+            {
+                Title = Title, 
+                Text = HtmlContent
+            };
+
+            await _mysqlDataStore.AddTextSprout(newTextSprout);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

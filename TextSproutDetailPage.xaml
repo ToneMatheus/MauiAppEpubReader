@@ -3,7 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppEpubReader.TextSproutDetailPage"
              Title="TextSproutDetailPage">
-    <StackLayout Padding="10">
+    <Grid>
         <Label x:Name="TextLabel" />
-    </StackLayout>
+   
+        <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="End" Spacing="20">
+            <Button Text="Edit" Command="{Binding EditCommand}" />
+            <Button Text="Delete" Command="{Binding DelCommand}" />
+        </StackLayout>
+    </Grid>
 </ContentPage>

@@ -16,13 +16,15 @@
     </VerticalStackLayout>-->
     <ScrollView>
         <Grid RowDefinitions="Auto, Auto, *" Padding="10,5">
-            <!--<Label Text="Editor inside RadBorder that resizes when content changes:"/>-->
-           
-                <local:CustomEditor AutoSize="TextChanges" 
-                                Text="{Binding HtmlContent}" />
             
-
+            <Label Text="Text From the Book Page:"/>
+            <local:CustomEditor AutoSize="TextChanges" 
+                            Text="{Binding HtmlContent}" />
             
+            <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="End" Spacing="20">
+                <Entry x:Name="inputView" Placeholder="Enter title here" Text="{Binding Title}" />
+                <Button Text="Add" Command="{Binding AddCommand}" />
+            </StackLayout>
         </Grid>
     </ScrollView>
 </ContentPage>
