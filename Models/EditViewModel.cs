@@ -65,7 +65,7 @@ namespace MauiAppEpubReader.Models
             };
 
             await _mysqlDataStore.AddTextSprout(newTextSprout);
-            await _navigation.PushAsync(new TextSproutPage());
+            await Shell.Current.GoToAsync("//TextSproutPage");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
